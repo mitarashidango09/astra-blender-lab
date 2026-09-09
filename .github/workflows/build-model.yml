@@ -2,6 +2,10 @@ name: Build Blender Model
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "model.py"
+      - ".github/workflows/build-model.yml"
 
 jobs:
   build:
@@ -9,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install Blender
         run: |
@@ -23,8 +27,11 @@ jobs:
       - name: Prepare output
         run: |
           mkdir -p output
+
           cp /tmp/model.blend output/model.blend
           cp /tmp/model.glb output/model.glb
+
+          cp /tmp/preview_*.png output/ 2>/dev/null || true
 
       - name: Upload model
         uses: actions/upload-artifact@v4
