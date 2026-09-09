@@ -1,0 +1,33 @@
+name: Build Blender Model
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender
+
+      - name: Run Blender
+        run: |
+          blender --background --python model.py
+
+      - name: Prepare output
+        run: |
+          mkdir -p output
+          cp /tmp/model.blend output/model.blend
+          cp /tmp/model.glb output/model.glb
+
+      - name: Upload model
+        uses: actions/upload-artifact@v4
+        with:
+          name: blender-model
+          path: output/
